@@ -1,0 +1,21 @@
+digraph binary_graph{
+graph[
+charset = "utf-8",
+labelloc = "t",
+labeljust = "c",
+bgcolor = "white",
+fontcolor = "black",
+fontsize = 8,
+style = "filled",
+layout = dot
+];
+edge[
+color = black 
+];
+41;
+41->38;
+38->31;
+31->12;
+12->8;
+12->19;
+}
