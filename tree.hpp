@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <functional>
 
 namespace teyo{
@@ -83,7 +84,6 @@ namespace teyo{
 		Node <T> *root;
 		const Node<T>* NIL;
 		void deleteTree(Node <T> * pivot){
-			std::cerr<< pivot->key << std::endl;
 			if(pivot->getLeft() != NIL)
 				deleteTree(pivot->getLeft());
 			if(pivot->getRight() != NIL)
@@ -95,7 +95,7 @@ namespace teyo{
 		BinaryTree(void)
 		{
 			NIL = ((Node<T>*) NULL);
-			root = NIL;
+			root = ((Node<T>*) NULL);
 		}
 		BinaryTree(T rootKey)
 		{
@@ -106,9 +106,19 @@ namespace teyo{
 		~BinaryTree(){
 			deleteTree(root);
 		}
+
+		void insert(std::vector<T> keys){
+			for(auto key : keys){
+				this->insert(key);
+			}
+		}
 		void insert(T key){
 			Node<T>* tmp = root;
 			Node<T>* ins = new Node<T> (key);
+			if( root == NULL){
+				root = ins;
+				return;
+			}
 			while(ins->getRoot() == NULL){
 				if(tmp->key > key){
 					if(tmp->getLeft()!= NIL)
@@ -131,6 +141,7 @@ namespace teyo{
 				}
 			}
 		}
+
 		Node<T>* getRoot(){
 			return root;
 		}
