@@ -1,0 +1,30 @@
+digraph binary_graph{
+graph[
+charset = "utf-8",
+labelloc = "t",
+labeljust = "c",
+bgcolor = "white",
+fontcolor = "black",
+fontsize = 8,
+style = "filled",
+layout = dot
+];
+edge[
+color = black 
+];
+6;
+6->2;
+2->1;
+1->"1NIL";
+1->"1NIL";
+2->4;
+4->3;
+3->"3NIL";
+3->"3NIL";
+4->5;
+5->"5NIL";
+5->"5NIL";
+6->7;
+7->"7NIL";
+7->"7NIL";
+}

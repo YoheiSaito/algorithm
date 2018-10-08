@@ -239,6 +239,7 @@ namespace teyo {
 			dotFile << "}\n";
 		}
 		Node<T>* search(T key){
+			Node<T>* pivot = root;
 			while(1){
 				if(pivot->key > key){
 					if(pivot->getLeft()!= NULL)
@@ -248,8 +249,8 @@ namespace teyo {
 						return NULL;
 					}
 				}
-				else if(tmp->key < key){
-					if(tmp->getRight()!= NULL) 
+				else if(pivot->key < key){
+					if(pivot->getRight()!= NULL) 
 						pivot = pivot->getRight();
 					else{
 						throw "unregistered key";
@@ -261,12 +262,49 @@ namespace teyo {
 			}
 		
 		}
-		void rotateLeft(T key){
-			
+
+		bool rotateLeft(T key){
+			auto pivot = search(key);
+			auto rt = pivot->getRoot();
+			auto next = pivot->getRight();
+			if(next==NULL){
+				return false;
+			}
+			pivot->setRight(next->getLeft());
+			pivot->setRoot(next);
+			next->setLeft(pivot);
+			next->setRoot(rt);
+			if(rt == NULL)
+				root = next;
+			else if(rt->key < key){
+				rt->setRight(next);
+			}else{
+				rt->setLeft(next);
+			}
+			return true;
 		}
 
-		void rotateRight(T key){
+		bool rotateRight(T key){
+			auto pivot = search(key);
+			auto rt = pivot->getRoot();
+			auto next = pivot->getLeft();
+			if(next==NULL){
+				return false;
+			}
+			pivot->setLeft(next->getRight());
+			pivot->setRoot(next);
+			next->setRight(pivot);
+			next->setRoot(rt);
+			if(rt == NULL)
+				root = next;
+			else if(rt->key < key){
+				rt->setRight(next);
+			}else{
+				rt->setLeft(next);
+			}
+			return true;
 		}
+
 
 	};
 }

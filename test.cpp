@@ -6,10 +6,18 @@ int main(){
 	std::random_device rnd;
 	BinaryTree<uint8_t> bt;
 	int keys[] = {
-		8,3,10,14,1,6,7,4,13
+		4,2,6,1,3,5,7
 	};
-	for(int i = 0; i < 8; i++){
-		bt.insert((uint8_t)rnd()%20);
+	for(int i = 0; i < 7; i++){
+		bt.insert(keys[i]);
 	}
-	bt.createGraphDot("test.dot", true);
+	try{
+		bt.createGraphDot("rot_original.dot", true);
+		bt.rotateLeft(4);
+		bt.createGraphDot("rot_left.dot", true);
+		bt.rotateRight(4);
+		bt.createGraphDot("rot_right.dot", true);
+	}catch (const char * errormsg){
+		std::cerr << errormsg << std::endl;
+	}
 }
