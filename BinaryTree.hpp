@@ -4,84 +4,14 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+
+#include "Node.hpp"
+
 namespace teyo {
-	template <class T> class Node{
-		Node<T> *root;
-		Node<T> *left, *right;
-		unsigned int count;
-		public:
-		const T key;
-		Node(T key_):
-			key(key_)
-		{
-			root = NULL;
-			left = NULL;
-			right = NULL;
-			count = 1;
-		}
-		Node(T key_, Node<T> *root):
-			key(key_)
-		{
-			this->root = root;
-			this->left = NULL;
-			this->right = NULL;
-			count = 1;
-		}
-		Node(T key_, Node<T> *left, Node<T> *right):
-			key(key_)
-		{
-			this->root = NULL;
-			this->left = left;
-			this->right = right;
-			count = 1;
-		}
-
-		Node(T key_, Node<T> *root, Node<T> *left, Node<T> *right):
-			key(key_)
-		{
-			this->root = root;
-			this->left = left;
-			this->right = right;
-			count = 1;
-		}
-
-
-		void setLeft(Node<T> *left){
-			this->left = left;
-		}
-		void setRight(Node<T> *right){
-			this->right = right;
-		}
-		void setRoot(Node<T> *root){
-			this->root = root;
-		}
-
-		Node<T>* getLeft(void){
-			return this->left;
-		}
-		Node<T>* getRight(void){
-			return this->right;
-		}
-		Node<T>* getRoot(void){
-			return this->root;
-		}
-		T getKey(){
-			return this->key;
-		}
-		void countup(void){
-			count++;
-		}
-		void countdown(void){
-			count--;
-		}
-		unsigned int getCount(void){
-			return count;
-		}
-	};
-
 	template <class T> class BinaryTree{
+		protected:
 		Node <T> *root;
-		void deleteTree(Node <T> * pivot){
+		virtual void deleteTree(Node <T> * pivot){
 			if(pivot->getLeft() != NULL)
 				deleteTree(pivot->getLeft());
 			if(pivot->getRight() != NULL)
@@ -109,14 +39,17 @@ namespace teyo {
 			}
 		}
 		void insert(T key){
-			Node<T>* tmp = root;
 			Node<T>* ins = new Node<T> (key);
+			insert(ins);
+		}
+		virtual void insert(Node<T>* ins){
+			Node<T>* tmp = root;
 			if( root == NULL){
 				root = ins;
 				return;
 			}
 			while(ins->getRoot() == NULL){
-				if(tmp->key > key){
+				if(tmp->key > ins->key){
 					if(tmp->getLeft()!= NULL)
 						tmp = tmp->getLeft();
 					else{
@@ -124,7 +57,7 @@ namespace teyo {
 						tmp->setLeft(ins);
 					}
 				}
-				else if(tmp->key < key){
+				else if(tmp->key < ins->key){
 					if(tmp->getRight()!= NULL) 
 						tmp = tmp->getRight();
 					else{
@@ -138,7 +71,7 @@ namespace teyo {
 			}
 		}
 
-		void delNode(T key, bool discount = false){
+		virtual void delNode(T key, bool discount = false){
 			Node<T>* tmp = root;
 			auto del_routine = [&](){
 				auto rt = tmp->getRoot();
@@ -202,7 +135,8 @@ namespace teyo {
 		Node<T>* getRoot(){
 			return root;
 		}
-		void createGraphDot(const char* filename, bool display_NIL = false){
+		virtual void createGraphDot(const char* filename, 
+				bool display_NIL = false, bool close = true){
 			std::ofstream dotFile(filename);
 			dotFile << 
 				"digraph binary_graph{\n"
@@ -218,25 +152,35 @@ namespace teyo {
 				"];\n"
 				"edge[\n"
 				"color = black \n"
-				"];\n";
+				"];\n"
+				"node[\n"
+				"color=black\n"
+				"fontcolor=white\n"
+				"];\n"
+			;
 			std::function<void (Node<T>*)> print_all;
 			print_all = [&](Node<T>* pivot){
 				if(pivot->getLeft() != NULL){
-					dotFile << +pivot->key << "->" << +pivot->getLeft()->key<<";\n";
+					dotFile << +pivot->key << "->" <<
+						+pivot->getLeft()->key<<";\n";
 					print_all(pivot->getLeft());
 				}else if(display_NIL){
-					dotFile << +pivot->key << "->\"" << +pivot->key << "NIL\";\n";
+					dotFile << +pivot->key << "->\"" <<
+						+pivot->key << "NIL\";\n";
 				}
 				if(pivot->getRight() != NULL){
-					dotFile << +pivot->key << "->" << +pivot->getRight()->key<<";\n";
+					dotFile << +pivot->key << "->" <<
+						+pivot->getRight()->key<<";\n";
 					print_all(pivot->getRight());
 				}else if(display_NIL){
-					dotFile << +pivot->key << "->\""<< +pivot->key << "NIL\";\n";
+					dotFile << +pivot->key << "->\""<<
+						+pivot->key << "NIL\";\n";
 				}
 			};
 			dotFile << +root->key <<";\n";
 			print_all(this->getRoot());
-			dotFile << "}\n";
+			if(close)
+				dotFile << "}\n";
 		}
 		Node<T>* search(T key){
 			Node<T>* pivot = root;
