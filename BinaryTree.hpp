@@ -12,6 +12,8 @@ namespace teyo {
 		protected:
 		Node <T> *root;
 		virtual void deleteTree(Node <T> * pivot){
+			if(pivot != NULL)
+				return;
 			if(pivot->getLeft() != NULL)
 				deleteTree(pivot->getLeft());
 			if(pivot->getRight() != NULL)
@@ -37,10 +39,6 @@ namespace teyo {
 			for(auto key : keys){
 				this->insert(key);
 			}
-		}
-		void insert(T key){
-			Node<T>* ins = new Node<T> (key);
-			insert(ins);
 		}
 		virtual void insert(Node<T>* ins){
 			Node<T>* tmp = root;
@@ -71,6 +69,11 @@ namespace teyo {
 			}
 		}
 
+		virtual void insert(T key){
+			Node<T>* ins = new Node<T> (key);
+			insert(ins);
+		}
+		
 		virtual void delNode(T key, bool discount = false){
 			Node<T>* tmp = root;
 			auto del_routine = [&](){
@@ -206,9 +209,7 @@ namespace teyo {
 			}
 		
 		}
-
-		bool rotateLeft(T key){
-			auto pivot = search(key);
+		bool rotateLeft(Node<T>* pivot){
 			auto rt = pivot->getRoot();
 			auto next = pivot->getRight();
 			if(next==NULL){
@@ -220,16 +221,14 @@ namespace teyo {
 			next->setRoot(rt);
 			if(rt == NULL)
 				root = next;
-			else if(rt->key < key){
+			else if(rt->key < pivot->key){
 				rt->setRight(next);
 			}else{
 				rt->setLeft(next);
 			}
 			return true;
 		}
-
-		bool rotateRight(T key){
-			auto pivot = search(key);
+		bool rotateRight(Node<T>* pivot){
 			auto rt = pivot->getRoot();
 			auto next = pivot->getLeft();
 			if(next==NULL){
@@ -241,12 +240,21 @@ namespace teyo {
 			next->setRoot(rt);
 			if(rt == NULL)
 				root = next;
-			else if(rt->key < key){
+			else if(rt->key < pivot->key){
 				rt->setRight(next);
 			}else{
 				rt->setLeft(next);
 			}
 			return true;
+		}
+
+		bool rotateLeft(T key){
+			auto pivot = search(key);
+			rotateLeft(pivot);
+		}
+		bool rotateRight(T key){
+			auto pivot = search(key);
+			rotateRight(pivot);
 		}
 
 

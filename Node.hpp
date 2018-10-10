@@ -1,3 +1,5 @@
+#pragma once
+#include <cstddef>
 namespace teyo{
 	enum Color {
 		BLACK,
@@ -61,13 +63,13 @@ namespace teyo{
 		}
 
 		virtual Node<T>* getLeft(void){
-			return this->left;
+			return (this == NULL)?(NULL):(left);
 		}
 		virtual Node<T>* getRight(void){
-			return this->right;
+			return (this == NULL)?(NULL):(right);
 		}
 		virtual Node<T>* getRoot(void){
-			return this->root;
+			return (this == NULL)?(NULL):(root);
 		}
 		T getKey(){
 			return this->key;
@@ -82,7 +84,7 @@ namespace teyo{
 			return count;
 		}
 		Color getColor(){
-			return color;
+			return (this == NULL)?(Color::BLACK):(color);
 		}
 		void setColor(Color c){
 			color = c;
