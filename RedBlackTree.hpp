@@ -10,38 +10,42 @@ namespace teyo {
 	{
 		void insertFixup(Node<T>* ins){
 			while(ins->getRoot()->getColor() == Color::RED){
-				if(ins->getRoot()->getRoot()->getLeft() == ins->getRoot()){
+				if( ins->getRoot() -> getRoot() == NULL)
+					break;
+				else if(ins->getRoot()->getRoot()->getLeft() == ins->getRoot()){
 					auto y = ins->getRoot()->getRoot()->getRight();
-					if(y->getColor() == Color::RED){
+					if(y != NULL && y->getColor() == Color::RED){
 						// case 1 
 						// uncle and parparent is red 
 						// before odd generation will be black (ins is 0)
 						// until uncle is not be red
 						ins->getRoot()->setColor(Color::BLACK);
 						y->setColor(Color::BLACK);
-						ins->getRoot()->getRoot()->setColor(Color::RED);
-						ins = y->getRoot();
-					} else if (ins == ins->getRoot()->getRight()){
-						//case 2
-						// self is right side node and uncle is Black
-						ins = ins->getRoot();
-						this->BinaryTree<T>::rotateLeft(ins);
+						//ins = ins->getRoot()->getRoot();
+						ins ->setColor(Color::RED);
 					}
+					 else if (ins == ins->getRoot()->getRight()){
+					 	//case 2
+					 	// self is right side node and uncle is Black
+					 	ins = ins->getRoot();
+					 	this->BinaryTree<T>::rotateLeft(ins);
+					 }
 					ins->getRoot()->setColor(Color::BLACK);
 					ins->getRoot()->getRoot()->setColor(Color::RED);
 					this->BinaryTree<T>::rotateRight(ins->getRoot()->getRoot());
-				}else{
+				}else {
 					auto y = ins->getRoot()->getRoot()->getLeft();
-					if(y->getColor() == Color::RED){
+					if(y != NULL && y->getColor() == Color::RED){
 						// case 1 
 						// uncle and parparent is red 
 						// before odd generation will be black (ins is 0)
 						// until uncle is not be red
 						ins->getRoot()->setColor(BLACK);
 						y->setColor(Color::BLACK);
-						y->getRoot()->setColor(Color::RED);
-						ins = y->getRoot();
-					} else if (ins == ins->getRoot()->getLeft()){
+						//ins = ins->getRoot()->getRoot();
+						ins ->setColor(Color::RED);
+					}
+					else if (ins == ins->getRoot()->getLeft()){
 						//case 2
 						// self is right side node and uncle is Black
 						ins = ins->getRoot();
@@ -75,8 +79,11 @@ namespace teyo {
 
 		void insert(T key){
 			Node<T>* ins = new Node<T>(key);
+			if(this->root == NULL)
+				ins->setColor(Color::BLACK);
+			else
+				ins->setColor(Color::RED);
 			BinaryTree<T>::insert(ins);
-			ins->setColor(Color::RED);
 			insertFixup(ins);
 		}
 
@@ -91,9 +98,10 @@ namespace teyo {
 				return;
 			auto output = [&](Node<T>* node){
 				if(node->getColor() == Color::RED){
-					dotFile << node->key << 
+					dotFile << +node->key << 
 					"[\n"
 					"color = RED\n"
+					"fontcolor = BLACK\n"
 					"];\n\n";
 				}
 			};

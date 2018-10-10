@@ -159,6 +159,8 @@ namespace teyo {
 				"node[\n"
 				"color=black\n"
 				"fontcolor=white\n"
+				"color=black\n"
+				"style = \"solid,filled\",\n"
 				"];\n"
 			;
 			std::function<void (Node<T>*)> print_all;
