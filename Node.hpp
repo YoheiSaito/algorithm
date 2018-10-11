@@ -2,50 +2,50 @@
 #include <cstddef>
 namespace teyo{
 	enum Color {
-		BLACK,
+		BLACK = 0,
 		RED
 	};
 	template <class T> class Node{
 		protected:
 		Color color;
-		Node<T> *root;
+		Node<T> *parent;
 		Node<T> *left, *right;
 		unsigned int count;
 		public:
 		const T key;
-		Node(T key_, Color color_ = Color::BLACK):
+		Node(T key_, Color color_ = Color::RED):
 			key(key_)
 		{
 			color = color_;
-			root = NULL;
+			parent = NULL;
 			left = NULL;
 			right = NULL;
 			count = 1;
 		}
-		Node(T key_, Node<T> *root, Color color_ = Color::BLACK):
+		Node(T key_, Node<T> *parent, Color color_ = Color::RED):
 			key(key_)
 		{
 			color = color_;
-			this->root = root;
+			this->parent = parent;
 			this->left = NULL;
 			this->right = NULL;
 			count = 1;
 		}
-		Node(T key_, Node<T> *left, Node<T> *right, Color color_ = Color::BLACK):
+		Node(T key_, Node<T> *left, Node<T> *right, Color color_ = Color::RED):
 			key(key_)
 		{
 			color = color_;
-			this->root = NULL;
+			this->parent = NULL;
 			this->left = left;
 			this->right = right;
 			count = 1;
 		}
 
-		Node(T key_, Node<T> *root, Node<T> *left, Node<T> *right, Color color_ = Color::BLACK):
+		Node(T key_, Node<T> *parent, Node<T> *left, Node<T> *right, Color color_ = Color::RED):
 			key(key_)
 		{
 			color = color_;
-			this->root = root;
+			this->parent = parent;
 			this->left = left;
 			this->right = right;
 			count = 1;
@@ -58,8 +58,8 @@ namespace teyo{
 		void setRight(Node<T> *right){
 			this->right = right;
 		}
-		void setRoot(Node<T> *root){
-			this->root = root;
+		void setParent(Node<T> *parent){
+			this->parent = parent;
 		}
 
 		virtual Node<T>* getLeft(void){
@@ -68,8 +68,8 @@ namespace teyo{
 		virtual Node<T>* getRight(void){
 			return (this == NULL)?(NULL):(right);
 		}
-		virtual Node<T>* getRoot(void){
-			return (this == NULL)?(NULL):(root);
+		virtual Node<T>* getParent(void){
+			return (this == NULL)?(NULL):(parent);
 		}
 		T getKey(){
 			return this->key;

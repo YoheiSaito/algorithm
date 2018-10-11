@@ -46,12 +46,12 @@ namespace teyo {
 				root = ins;
 				return;
 			}
-			while(ins->getRoot() == NULL){
+			while(ins->getParent() == NULL){
 				if(tmp->key > ins->key){
 					if(tmp->getLeft()!= NULL)
 						tmp = tmp->getLeft();
 					else{
-						ins->setRoot(tmp);
+						ins->setParent(tmp);
 						tmp->setLeft(ins);
 					}
 				}
@@ -59,7 +59,7 @@ namespace teyo {
 					if(tmp->getRight()!= NULL) 
 						tmp = tmp->getRight();
 					else{
-						ins->setRoot(tmp);
+						ins->setParent(tmp);
 						tmp->setRight(ins);
 					}
 				}else{
@@ -77,7 +77,7 @@ namespace teyo {
 		virtual void delNode(T key, bool discount = false){
 			Node<T>* tmp = root;
 			auto del_routine = [&](){
-				auto rt = tmp->getRoot();
+				auto rt = tmp->getParent();
 				if(tmp->getLeft() == NULL && tmp->getRight() == NULL){
 					if(rt->key < key)
 						rt->setRight(NULL);
@@ -94,7 +94,7 @@ namespace teyo {
 					else
 						rt->setLeft(tmp->getLeft());
 				}else{
-					auto t = tmp->getRoot();
+					auto t = tmp->getParent();
 					if(rt->key < key){
 						auto rgt = tmp->getRight();
 						rt->setRight(tmp->getLeft());
@@ -135,7 +135,7 @@ namespace teyo {
 
 		}
 
-		Node<T>* getRoot(){
+		Node<T>* getParent(){
 			return root;
 		}
 		virtual void createGraphDot(const char* filename, 
@@ -183,7 +183,7 @@ namespace teyo {
 				}
 			};
 			dotFile << +root->key <<";\n";
-			print_all(this->getRoot());
+			print_all(this->getParent());
 			if(close)
 				dotFile << "}\n";
 		}
@@ -212,15 +212,15 @@ namespace teyo {
 		
 		}
 		bool rotateLeft(Node<T>* pivot){
-			auto rt = pivot->getRoot();
+			auto rt = pivot->getParent();
 			auto next = pivot->getRight();
 			if(next==NULL){
 				return false;
 			}
 			pivot->setRight(next->getLeft());
-			pivot->setRoot(next);
+			pivot->setParent(next);
 			next->setLeft(pivot);
-			next->setRoot(rt);
+			next->setParent(rt);
 			if(rt == NULL)
 				root = next;
 			else if(rt->key < pivot->key){
@@ -231,15 +231,15 @@ namespace teyo {
 			return true;
 		}
 		bool rotateRight(Node<T>* pivot){
-			auto rt = pivot->getRoot();
+			auto rt = pivot->getParent();
 			auto next = pivot->getLeft();
 			if(next==NULL){
 				return false;
 			}
 			pivot->setLeft(next->getRight());
-			pivot->setRoot(next);
+			pivot->setParent(next);
 			next->setRight(pivot);
-			next->setRoot(rt);
+			next->setParent(rt);
 			if(rt == NULL)
 				root = next;
 			else if(rt->key < pivot->key){

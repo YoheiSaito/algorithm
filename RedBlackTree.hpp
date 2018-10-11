@@ -8,60 +8,54 @@ namespace teyo {
 	template <class T> class RedBlackTree : 
 		public BinaryTree<T>
 	{
+		public:
 		void insertFixup(Node<T>* ins){
-			while(ins->getRoot()->getColor() == Color::RED){
-				if( ins->getRoot() -> getRoot() == NULL)
-					break;
-				else if(ins->getRoot()->getRoot()->getLeft() == ins->getRoot()){
-					auto y = ins->getRoot()->getRoot()->getRight();
-					if(y != NULL && y->getColor() == Color::RED){
-						// case 1 
-						// uncle and parparent is red 
-						// before odd generation will be black (ins is 0)
-						// until uncle is not be red
-						ins->getRoot()->setColor(Color::BLACK);
+			while(ins->getParent()->getColor() == Color::RED){
+				if(ins->getParent()->getParent()->getLeft() == ins->getParent()){
+					auto y = ins->getParent()->getParent()->getRight();
+					if(y->getColor() == Color::RED){
+						//case 1 ancle is red
+						ins->getParent()->setColor(Color::BLACK);
 						y->setColor(Color::BLACK);
-						//ins = ins->getRoot()->getRoot();
-						ins ->setColor(Color::RED);
+						ins = ins->getParent()->getParent();
+						ins -> setColor(Color::RED);
+					} else{
+						//case 2,3 ancle is black
+						if(ins ->getParent() -> getRight() == ins){
+							//case2 z is right child
+							ins = ins->getParent();
+							this->rotateLeft(ins);
+						}
+							//case 3 z is left child
+							ins->getParent()->setColor(Color::BLACK);
+							ins->getParent()->getParent()->setColor(Color::RED);
+							this->rotateRight(ins->getParent()->getParent());
 					}
-					 else if (ins == ins->getRoot()->getRight()){
-					 	//case 2
-					 	// self is right side node and uncle is Black
-					 	ins = ins->getRoot();
-					 	this->BinaryTree<T>::rotateLeft(ins);
-					 }
-					ins->getRoot()->setColor(Color::BLACK);
-					ins->getRoot()->getRoot()->setColor(Color::RED);
-					this->BinaryTree<T>::rotateRight(ins->getRoot()->getRoot());
-				}else {
-					auto y = ins->getRoot()->getRoot()->getLeft();
-					if(y != NULL && y->getColor() == Color::RED){
-						// case 1 
-						// uncle and parparent is red 
-						// before odd generation will be black (ins is 0)
-						// until uncle is not be red
-						ins->getRoot()->setColor(BLACK);
+				}else{
+					auto y = ins->getParent()->getParent()->getLeft();
+					if(y->getColor() == Color::RED){
+						//case 1 ancle is red
+						ins->getParent()->setColor(Color::BLACK);
 						y->setColor(Color::BLACK);
-						//ins = ins->getRoot()->getRoot();
-						ins ->setColor(Color::RED);
+						ins = ins->getParent()->getParent();
+						ins -> setColor(Color::RED);
+					} else{
+						//case 2,3 ancle is black
+						if(ins ->getParent() -> getLeft() == ins){
+							ins = ins->getParent();
+							this->rotateLeft(ins);
+						}
+							//case 3 z is left child
+							ins->getParent()->setColor(Color::BLACK);
+							ins->getParent()->getParent()->setColor(Color::RED);
+							this->rotateRight(ins->getParent()->getParent());
+
 					}
-					else if (ins == ins->getRoot()->getLeft()){
-						//case 2
-						// self is right side node and uncle is Black
-						ins = ins->getRoot();
-						this->BinaryTree<T>::rotateRight(ins);
-					}
-					//case3
-					//self is left side node.
-					ins->getRoot()->setColor(Color::BLACK);
-					ins->getRoot()->getRoot()->setColor(Color::RED);
-					this->BinaryTree<T>::rotateLeft(ins->getRoot()->getRoot());
 				}
 			}
-			this->getRoot()->setColor(Color::BLACK);
+			this->root->setColor(Color::BLACK);
 		}
 
-		public:
 		RedBlackTree(void):
 			BinaryTree<T>()
 		{
@@ -70,7 +64,6 @@ namespace teyo {
 			BinaryTree<T>()
 		{
 			this->root = new Node<T>(rootKey);
-			this->root->setColor(Color::BLACK);
 		}
 
 		~RedBlackTree(){
@@ -79,12 +72,12 @@ namespace teyo {
 
 		void insert(T key){
 			Node<T>* ins = new Node<T>(key);
-			if(this->root == NULL)
-				ins->setColor(Color::BLACK);
-			else
-				ins->setColor(Color::RED);
 			BinaryTree<T>::insert(ins);
-			insertFixup(ins);
+			if(ins->getParent() == NULL)
+				ins->setColor(Color::BLACK);
+			else{
+				insertFixup(ins);
+			}
 		}
 
 		void delNode(T key, bool discount = false){
@@ -108,12 +101,11 @@ namespace teyo {
 
 			std::function<void (Node<T>*)> print_color;
 			print_color = [&](Node<T>* node){
+				output(node);
 				if(node->getLeft() != NULL){
-					output(node);
 					print_color(node->getLeft());
 				}
 				if(node->getRight() != NULL){
-					output(node);
 					print_color(node->getRight());
 				}
 			};
